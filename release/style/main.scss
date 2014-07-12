@@ -1,0 +1,292 @@
+@charset "UTF-8";
+// 基本参数
+$footerHeight:(60rem / 24); // 页脚高度 
+$playerWidth:(140rem / 24); // 玩家宽度 
+ html {
+  font-size: 24px; // 150%
+}
+body {
+  font-size: (14rem / 24);
+  overflow: hidden;
+  user-select: none;
+}
+@keyframes run {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -($playerWidth * 12) 0; // 12帧
+  }
+}
+@keyframes twinkle {
+  0% {
+    height: 0;
+  }
+  90% {
+    height: 0;
+  }
+  95% {
+    height: (12rem / 24);
+  }
+  100% {
+    height: 0;
+  }
+}
+#player-wrap {
+  position: absolute;
+  bottom: $footerHeight;
+  left: 0;
+}
+#player {
+  position: absolute;
+  bottom: 0;
+  text-indent: 0;
+  width: $playerWidth;
+  height: (144rem / 24);
+  background: url('../images/player.png') 0 0 no-repeat;
+  background-size: (1680rem / 24) (150rem / 24);
+  .eyes {
+    position: absolute;
+    width: (8rem / 24);
+    height: (12rem / 24);
+    background-color: #ffb879;
+    left: (46rem / 24);
+    top: (46rem / 24);
+    animation: twinkle 3s linear infinite;
+  }
+  #righteye {
+    left: (70rem / 24);
+  }
+}
+#player.reverse {
+  transform: rotateY(180deg);
+}
+#player.run {
+  animation: run .6s steps(12) infinite;
+  .eyes {
+    height: 0;
+    animation: none;
+  }
+}
+#player.jump {
+  background-position: -($playerWidth * 7) 0; // 第8帧 
+  animation: none !important;
+}
+//场景
+@mixin scenes($width:100%, $height:100%) {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: $width;
+  height: $height;
+}
+#scenes-wrap {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+@mixin scene-1() {
+  // 注意不要让跳板一半进入最后半屏
+  @include scenes((4000rem / 24), 100%);
+}
+#scene-1 {
+  @include scene-1();
+  .footer {
+    @include scenes((4000rem / 24), (60rem / 24));
+    background-image: linear-gradient(45deg, rgba(255, 255, 255, .15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .15) 50%, rgba(255, 255, 255, .15) 75%, transparent 75%, transparent);
+    background-color: #5cb85c;
+    background-size: (200rem / 24) (200rem / 24);
+    box-shadow: 0 -2px 5px #3ba03b;
+    z-index: 1;
+  }
+  .scenes {
+    @include scene-1();
+  }
+  .main {
+    // 容器
+    position: relative;
+    bottom: $footerHeight;
+    width: 100%;
+    height: 100%;
+  }
+  .jumpboard {
+    position: absolute;
+    bottom: (125rem / 24);
+    left: (1500rem / 24);
+    width: (200rem / 24);
+    height: (25rem / 24);
+    background: skyblue;
+    border: (2rem / 24) solid #999;
+    text-align: center;
+    color: #fff;
+    line-height: (25rem / 24);
+  }
+}
+// 速度设置
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: (60rem / 24);
+  background: #fff;
+  box-shadow: 0 0 10px #ccc;
+  z-index: 999;
+}
+#changeSpeed {
+  float: right;
+  margin-top: (10rem / 24);
+}
+#speed {
+  margin-top: (10rem / 24);
+  position: relative;
+  width: 100px;
+  -webkit-appearance: none;
+  background-image: linear-gradient(90deg, #ff0, #f60);
+  height: 8px;
+  border-radius: 10px;
+  outline: none;
+  box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+#speed::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  cursor: ew-resize;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+  background: -webkit-linear-gradient(top, #ccc, #585858);
+}
+#speedValue {
+  padding-top: (5rem / 24);
+}
+#valueNum {
+  color: #f00;
+  font-weight: bold
+}
+#warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-size: 3em;
+  color: #ff0;
+  font-weight: bold;
+  padding-top: 70%;
+  text-align: center;
+  opacity: 0;
+  background: rgba(0, 0, 0, .7);
+  transition: opacity .3s;
+  z-index: -1;
+}
+// 响应式
+@media only screen {
+  @media (max-width: 959px) {
+    @media (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {
+      html {
+        font-size: (24px / 2);
+      }
+    }
+  }
+  @media (orientation: portrait) {
+    #warning {
+      opacity: 1;
+      z-index: 99999;
+    }
+  }
+}
+// 触发区
+.trigger {
+  position: absolute;
+  bottom: 0;
+  left: 2000px;
+  width: 100px;
+  height: 100px;
+  background: #2c7b94;
+  text-align: center;
+  border-radius: 50%;
+}
+.trigger:before {
+  content: '';
+  position: absolute;
+  left: 45px;
+  top: -36px;
+  width: 10px;
+  height: 80px;
+  background: #FF8500;
+  transform: rotate(-45deg);
+  transform-origin: center bottom;
+  transition: all .5s;
+  border-radius: 5px;
+}
+.trigger:after {
+  content: 'OFF';
+  font-size: 2em;
+  line-height: 100px;
+  color: #ff0;
+  z-index: 1;
+  position: relative;
+}
+.trigger.on:after {
+  content: 'ON';
+}
+.trigger.on:before {
+  transform: rotate(45deg);
+}
+.target > .jumpboard {
+  opacity: 0;
+  height: 0 !important;
+  border-color: purple !important;
+  border-radius: 2px;
+  transition: all .3s;
+}
+@for $i from 1 through 3 {
+  .target > .jumpboard:nth-child(#{$i}) {
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition-delay: (.15s * $i);
+  }
+}
+.trigger.on + .target > .jumpboard {
+  opacity: 1;
+  transform: scaleX(1);
+}
+.target > .entry {
+  opacity: 0;
+  transition: all 1s;
+}
+.trigger.on + .target > .entry {
+  opacity: 1;
+}
+#entry-tip {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  font-size: 2em;
+  margin-left: -2.5em;
+  background: rgba(0, 0, 0, .4);
+  color: #fff;
+  padding: .5em;
+  border-radius: 2em;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .6);
+  opacity: 0;
+  transition: opacity .3s;
+  span {
+    color: #ff0;
+    padding: 0 .5em;
+  }
+}
+#entry-tip.on {
+  opacity: 1;
+}
+.entry {
+  position: absolute;
+  left: 2200px;
+  bottom: 354px;
+  width: 100px;
+  height: 100px;
+  background: #ccc;
+}

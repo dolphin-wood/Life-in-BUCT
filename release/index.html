@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>2D Engine by Dolphin</title>
+    <link rel="stylesheet" type="text/css" href="style/main.css">
+    <script src="js/jquery-2.1.1.min.js"></script>
+    <script>
+    // 触摸支持
+    if ('ontouchstart' in window) $('html').addClass('touch');
+    </script>
+    <style>
+    .main:before {
+        content: 'start';
+        display: block;
+        position: absolute;
+        left: 0;
+        width: 100px;
+        height: 100%;
+        background: #ccc;
+    }
+    #player-wrap {
+        left: 4.166667rem;
+    }
+    .touch #control {
+        display: block;
+    }
+    #control {
+        display: none;
+        position: fixed;
+        bottom: 5px;
+        width: 100%;
+    }
+    #control button {
+        margin-right: 20px;
+        border: none;
+        background: none;
+        background: #668599;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        opacity: .8;
+        font-size: 30px;
+        color: #fff;
+        font-weight: bold;
+    }
+    #upward {
+        float: right;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="header">
+        <div id="fps" style="float: left;margin: 1rem;font-size: 1.2em;">
+            FPS:
+            <span id="fps-value" style="color: #f00;font-weight: bold;"></span>
+        </div>
+        <div id="changeSpeed">
+            <input type="range" name="speed" id="speed" min="0.5" max="2" step="0.1" value="1">
+            <div id="speed-value">
+                <span>Speed:</span>
+                <span id="value-num" style="color: #f00;font-weight: bold;">1.0</span>
+                <span>x</span>
+            </div>
+        </div>
+    </div>
+    <div id="scenes-wrap">
+        <div id="scene-1">
+            <div class="scenes scene-1-1" data-speed="1">
+                <div class="main">
+                    <div class="jumpboard" style="left:12.5rem;bottom:4.16667rem;height:0">Line</div>
+                    <div class="trigger" data-onboard="false" data-action="openEntry" data-index="0"></div>
+                    <div class="target">
+                        <div class="jumpboard">Jump On me</div>
+                        <div class="jumpboard" style="left:75rem;bottom:10.41667rem">Jump On me 2</div>
+                        <div class="jumpboard" style="left:87.5rem;bottom:14.58334rem">Jump On me 3</div>
+                    </div>
+                    <div class="entry" data-onboard="true">Entry</div>
+                    <div class="trigger" data-onboard="true" data-action="openEntry" data-index="1" style="left:3600px;bottom:129px"></div>
+                    <div class="target">
+                        <div class="entry" data-onboard="false" style="left: auto;right: 0;bottom: 0;">Entry 2</div>
+                    </div>
+                    <div class="jumpboard" style="left:145.83334rem;bottom:4.166667rem">Jump On me Final</div>
+                </div>
+                <div class="footer"></div>
+            </div>
+            <div class="scenes scene-1-2" data-speed="0.5" style="position: absolute;bottom: 0;left: 0;width: 4000px;height: 100%;z-index: -1;">
+                <div style="
+    width: 4.166667rem;
+    height: 4.166667rem;
+    background: #f60;
+    position: absolute;
+    left: 33.333333rem;
+    bottom: 8.33333rem;
+    opacity: .8;
+">BG</div>
+            </div>
+        </div>
+    </div>
+    <div id="player-wrap">
+        <div id="player">
+            <div id="lefteye" class="eyes"></div>
+            <div id="righteye" class="eyes"></div>
+        </div>
+    </div>
+    <div id="control">
+        <button id="backward">←</button>
+        <button id="forward">→</button>
+        <button id="upward">↑</button>
+    </div>
+    <div id="warning">
+        请旋转屏幕进行游戏
+    </div>
+    <div id="entry-tip">
+        按下
+        <span>Enter</span>键进入
+    </div>
+    <script src="js/requestAnimationFrame.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+    var fps = {
+        startTime: 0,
+        frameNumber: 0,
+        getFPS: function() {
+            this.frameNumber++;
+            var d = new Date().getTime(),
+                currentTime = (d - this.startTime) / 1000,
+                result = Math.floor((this.frameNumber / currentTime));
+
+            if (currentTime > 1) {
+                this.startTime = new Date().getTime();
+                this.frameNumber = 0;
+            }
+            return result;
+        }
+    };
+    var f = document.querySelector("#fps-value");
+
+    function gameLoop() {
+        setTimeout(gameLoop, 1000 / 60);
+        f.innerHTML = fps.getFPS();
+    }
+
+    window.onload = gameLoop;
+    </script>
+</body>
+
+</html>
